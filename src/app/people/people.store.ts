@@ -164,6 +164,5 @@ export class PeopleStore extends ComponentStore<PeopleState> {
     super(INITIAL_STATE);
     this.fetchPeople();
     this.fetchFilms();
-    this.currentPerson$.subscribe((person) => console.log(person));
   }
 }
