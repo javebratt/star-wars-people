@@ -12,6 +12,7 @@ export interface PeopleState {
   currentPage: string;
   peopleCount: number;
   currentPerson?: People;
+  isModalOpen: boolean;
 }
 
 export const INITIAL_STATE = {
@@ -19,6 +20,7 @@ export const INITIAL_STATE = {
   films: [],
   currentPage: '1',
   peopleCount: 1,
+  isModalOpen: false,
 };
 
 @Injectable()
@@ -29,6 +31,15 @@ export class PeopleStore extends ComponentStore<PeopleState> {
   readonly currentPage$ = this.select((state) => state.currentPage);
   readonly peopleCount$ = this.select((state) => state.peopleCount);
   readonly films$ = this.select((state) => state.films);
+
+  readonly currentPerson$ = this.select((state) => state.currentPerson);
+  readonly isModalOpen$ = this.select((state) => state.isModalOpen);
+
+  readonly vm$ = this.select({
+    people: this.people$,
+    currentPerson: this.currentPerson$,
+    isModalOpen: this.isModalOpen$,
+  });
 
   readonly updatePeople = this.updater((state, people: People[]) => ({
     ...state,
@@ -50,19 +61,17 @@ export class PeopleStore extends ComponentStore<PeopleState> {
     films,
   }));
 
-  readonly setCurrentPerson = this.updater((state, currentPerson: People) => ({
-    ...state,
-    currentPerson,
-  }));
+  readonly updateCurrentPerson = this.updater(
+    (state, currentPerson: People) => ({
+      ...state,
+      currentPerson,
+    })
+  );
 
-  /**
-   * const people = response.results.map((person) => ({
-  ...person,
-  films: person.films.map((filmId) => {
-    return films.find((film) => film.url === filmId);
-  }),
-}));
-   */
+  readonly updateModalStatus = this.updater((state, isModalOpen: boolean) => ({
+    ...state,
+    isModalOpen,
+  }));
 
   readonly fetchFilms = this.effect((trigger$) =>
     trigger$.pipe(
@@ -71,6 +80,29 @@ export class PeopleStore extends ComponentStore<PeopleState> {
           tapResponse(
             (response) => {
               this.updateFilms(response.results);
+            },
+            (error) => console.error('error', error)
+          )
+        )
+      )
+    )
+  );
+
+  readonly setCurrentPerson = this.effect<People>((currentPerson$) =>
+    currentPerson$.pipe(
+      concatLatestFrom(() => [this.films$]),
+      switchMap(([currentPerson, films]) =>
+        this.peopleService.getPlanet(currentPerson.homeworld as string).pipe(
+          tapResponse(
+            (response) => {
+              this.updateCurrentPerson({
+                ...currentPerson,
+                homeworldDetails: response,
+                filmsDetail: currentPerson.films.map((filmId) => {
+                  return films.find((film) => film.url === filmId) as Film;
+                }),
+              });
+              this.updateModalStatus(true);
             },
             (error) => console.error('error', error)
           )
@@ -88,7 +120,7 @@ export class PeopleStore extends ComponentStore<PeopleState> {
             (response) => {
               this.updatePeople(response.results);
               this.setPeopleCount(response.count);
-              this.setCurrentPage('2');
+              this.setCurrentPage((parseInt(page) + 1).toString());
             },
             (error) => console.error('error', error)
           )
@@ -132,6 +164,6 @@ export class PeopleStore extends ComponentStore<PeopleState> {
     super(INITIAL_STATE);
     this.fetchPeople();
     this.fetchFilms();
-    this.state$.subscribe((state) => console.log(state));
+    this.currentPerson$.subscribe((person) => console.log(person));
   }
 }

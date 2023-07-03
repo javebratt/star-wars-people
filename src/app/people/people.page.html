@@ -1,22 +1,71 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Star Wars People</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ng-container *ngIf="vm$ | async as vm">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Star Wars People</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list>
-    <ion-item *ngFor="let person of people$ | async">
-      <ion-label>
-        <h2>{{ person.name }}</h2>
-        <p>Number of films: {{ person.films.length }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-    <ion-infinite-scroll-content
-      loadingText="Loading more characters"
-      loadingSpinner="bubbles"
-    ></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-</ion-content>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item *ngFor="let person of vm.people" (click)="selectPerson(person)">
+        <ion-label>
+          <h2>{{ person.name }}</h2>
+          <p>Number of films: {{ person.films.length }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+      <ion-infinite-scroll-content
+        loadingText="Loading more characters"
+        loadingSpinner="bubbles"
+      ></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+    <ion-modal
+      (willDismiss)="onWillDismiss()"
+      [initialBreakpoint]="1"
+      [breakpoints]="[0, 1]"
+      [presentingElement]="presentingElement"
+      [isOpen]="vm.isModalOpen"
+    >
+      <ng-template>
+        <div class="modal-container">
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button (click)="closeModal()">Close</ion-button>
+              </ion-buttons>
+              <ion-title>{{vm.currentPerson?.name}}</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding">
+            <p>
+              {{vm.currentPerson?.name}} is from the planet
+              {{vm.currentPerson?.homeworldDetails?.name}}, which has a
+              {{vm.currentPerson?.homeworldDetails?.terrain}} terrain and a
+              {{vm.currentPerson?.homeworldDetails?.climate}} climate. It also
+              has a population of
+              {{vm.currentPerson?.homeworldDetails?.population}}.
+            </p>
+
+            <p>
+              {{vm.currentPerson?.name}} has been in
+              {{vm.currentPerson?.films?.length}} films.
+            </p>
+            <ion-list>
+              <ion-item
+                *ngFor="let film of vm.currentPerson?.filmsDetail"
+                class="ion-no-padding"
+              >
+                <ion-label>
+                  <h2>{{ film.title }}</h2>
+                  <p>Released on: {{ film.release_date }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </div>
+      </ng-template>
+    </ion-modal>
+  </ion-content>
+</ng-container>
