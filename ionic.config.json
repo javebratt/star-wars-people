@@ -1,0 +1,7 @@
+{
+  "name": "start-wars-people",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
