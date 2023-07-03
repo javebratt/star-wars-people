@@ -1,7 +1,4 @@
 {
   "name": "star-wars-people",
-  "integrations": {
-    "capacitor": {}
-  },
   "type": "angular-standalone"
 }
