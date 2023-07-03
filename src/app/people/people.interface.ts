@@ -5,7 +5,9 @@ export interface People {
   eye_color: string;
   birth_year: string;
   homeworld: string;
+  homeworldDetails?: Planet;
   films: string[];
+  filmsDetail: Film[];
   url: string;
 }
 
@@ -17,6 +19,13 @@ export interface Film {
   url: string;
 }
 
+export interface Planet {
+  name: string;
+  climate: string;
+  terrain: string;
+  population: string;
+  url: string;
+}
 export interface PeopleResponse {
   count: number;
   next: string;
