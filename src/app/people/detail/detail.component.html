@@ -1,4 +1,4 @@
-<ng-container *ngIf="person$ | async as person">
+<ng-container *ngIf="person">
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
@@ -8,11 +8,14 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
-    <p>
+    <p *ngIf="person.homeworldDetails?.name !== 'unknown'">
       {{ person.name }} is from the planet {{ person.homeworldDetails?.name }},
       which has a {{ person.homeworldDetails?.terrain }} terrain and a
       {{ person.homeworldDetails?.climate }} climate. It also has a population
       of {{ person.homeworldDetails?.population | number }}.
+    </p>
+    <p *ngIf="person.homeworldDetails?.name === 'unknown'">
+      We don't know what planet is {{ person.name }} from.
     </p>
 
     <p>

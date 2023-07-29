@@ -29,7 +29,7 @@
       [isOpen]="vm.isModalOpen"
     >
       <ng-template>
-        <app-detail class="full-page-modal" />
+        <app-detail class="full-page-modal" [person]="vm.currentPerson" />
       </ng-template>
     </ion-modal>
   </ion-content>
