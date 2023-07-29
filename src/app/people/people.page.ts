@@ -7,6 +7,7 @@ import {
   IonRouterOutlet,
   IonicModule,
 } from '@ionic/angular';
+import { DetailComponent } from './detail/detail.component';
 import { People } from './people.interface';
 import { PeopleService } from './people.service';
 import { PeopleStore } from './people.store';
@@ -17,7 +18,13 @@ import { PeopleStore } from './people.store';
   styleUrls: ['./people.page.scss'],
   standalone: true,
   providers: [PeopleService, PeopleStore],
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    DetailComponent,
+  ],
 })
 export class PeoplePage {
   peopleStore = inject(PeopleStore);

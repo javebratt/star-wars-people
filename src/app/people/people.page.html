@@ -28,41 +28,8 @@
       [presentingElement]="presentingElement"
       [isOpen]="vm.isModalOpen"
     >
-      <ng-template *ngIf="vm.currentPerson as currentPerson">
-        <ion-header>
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-button (click)="closeModal()">Close</ion-button>
-            </ion-buttons>
-            <ion-title>{{vm.currentPerson?.name}}</ion-title>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding">
-          <p>
-            {{currentPerson.name}} is from the planet
-            {{currentPerson.homeworldDetails?.name}}, which has a
-            {{currentPerson.homeworldDetails?.terrain}} terrain and a
-            {{currentPerson.homeworldDetails?.climate}} climate. It also has a
-            population of {{currentPerson.homeworldDetails?.population | number
-            }}.
-          </p>
-
-          <p>
-            {{currentPerson.name}} has been in {{currentPerson.films.length}}
-            films.
-          </p>
-          <ion-list>
-            <ion-item
-              *ngFor="let film of currentPerson.filmsDetail"
-              class="ion-no-padding"
-            >
-              <ion-label>
-                <h2>{{ film.title }}</h2>
-                <p>Released on: {{ film.release_date }}</p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-content>
+      <ng-template>
+        <app-detail class="full-page-modal" />
       </ng-template>
     </ion-modal>
   </ion-content>
